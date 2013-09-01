@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/quickfinder/db" VERSION="20130831" COMMENT="XMLDB file for Moodle blocks/quickfinder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="block_quickfinder" COMMENT="Default comment for block_quickfinder, please edit me" NEXT="mdl_block_quickfinder">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="mdl_block_quickfinder" COMMENT="Default comment for the table, please edit me" PREVIOUS="block_quickfinder">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="keyindex"/>
+        <FIELD NAME="keyindex" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="username"/>
+        <FIELD NAME="username" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="keyindex" NEXT="assignment1"/>
+        <FIELD NAME="assignment1" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="username" NEXT="assignment2"/>
+        <FIELD NAME="assignment2" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="assignment1" NEXT="assignment3"/>
+        <FIELD NAME="assignment3" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="assignment2"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
