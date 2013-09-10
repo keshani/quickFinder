@@ -6,7 +6,7 @@ class block_quickfinder extends block_base{
     }
     
     public function get_content(){
-        global $CFG, $OUTPUT;
+        global $CFG, $OUTPUT;// global
         if($this->content!==null){
             return $this->content;
         }
