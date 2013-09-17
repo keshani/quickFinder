@@ -1,25 +1,23 @@
 <?php
 
 $capabilities = array(
-    'block/quickfinder:myaddinstance'=>array(
-        'captype'=>'write',
-        'contextlevel'=>CONTEXT_SYSTEM,
-        'archetypes'=>array(
-            'user'=>CAP_ALLOW
+    'block/quickfinder:myaddinstance' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'user' => CAP_ALLOW
         ),
-        'clonepermissionfrom'=>'moodle/my:manageblocks'
+        'clonepermissionfrom' => 'moodle/my:manageblocks'
     ),
-    
-    'block/quickfinder:addinstance'=>array(
-        'riskbitmask'=>RISK_SPAM|RISK_XSS,
-        
-        'captype'=>'write',
-        'contextlevel'=>CONTEXT_BLOCK,
-        'archetypes'=>array(
-            'editingteacher'=>CAP_ALLOW,
-            'manager'=>CAP_ALLOW
+    'block/quickfinder:addinstance' => array(
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
         ),
-        'clonepermissionsfrom'=>'moodle/site:manageblocks'
+        'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
 );
 ?>

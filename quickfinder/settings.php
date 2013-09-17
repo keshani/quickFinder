@@ -2,7 +2,7 @@
 
 $settings->add(new admin_setting_heading(
         'headerconfig',
-        get_string('headerconfig','block_quickfinder'),
+        get_string('headerconfig','block_quickfinder'),//get header configeration string
         get_string('descconfig','block_quickfinder')
         ));
 
