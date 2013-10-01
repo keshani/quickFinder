@@ -11,37 +11,13 @@ if (isset($_GET['search'])) {
 //    echo $baseurl;
 //$result = pdf2text ("http://localhost/moodle/pluginfile.php/////CS3022-Project-1.pdf");
 
-
-
     $userid = $USER->id;
-
-    //  echo $_GET['id'];
-    //  echo $userid;
     $keyword = $_GET['search'];
     $course = $_GET['id'];
-    store_assignment_description($keyword, $userid, $course);
+    retrive_assignment($keyword, $userid, $course);
 }
 
-//  echo $result;
-// require_once("../config.php");
-//
-//    $filename = "m";
-//    $table_files = "files";
-//    $results = $DB->get_record($table_files, array('filename' => $filename, 'sortorder' => 1));
-//    $baseurl = "$CFG->wwwroot/pluginfile.php/$results->contextid/$results->component/$results->filearea/$results->itemid/$filename";
-//    echo $baseurl;
-//    class assignment_details {
-//
-//    // $keyword=$_Get("search");
-//
-//    public function cron() {
-//        $this->store_assignment_description();
-//
-//        // do something
-//        return true;
-//    }
-//
-function store_assignment_description($keyword, $user, $course) {
+function retrive_assignment($keyword, $user, $course) {
     global $DB;
     $con = mysql_connect("localhost", "root", "");
 
@@ -53,16 +29,33 @@ function store_assignment_description($keyword, $user, $course) {
     mysql_select_db("moodle", $con);
 
 
-    $result = mysql_query("select assignmentname from mdl_block_quickfinder where assignmenttext like '%$keyword%' and userid=$user and courseid=$course ");
+    $result1 = mysql_query("select * from mdl_block_quickfinder where assignmenttext like '%$keyword%' and userid=$user and courseid=$course ");
 
-    if (!$result) {
+    if (!$result1) {
         die('Invalid query: ' . mysql_error());
     }
 
-    $rows = mysql_fetch_array($result);
-    foreach ($rows as $value) {
-        echo "$value <br>";
-        // echo $rows['assignmentname'];
+   // $rows = mysql_fetch_array($result);
+
+     while($rows1 = mysql_fetch_array( $result1 )) 
+ {
+         $result2= mysql_query("select * from mdl_files where itemid=".$rows1['itemid']."");
+         $rows2 = mysql_fetch_array($result2);
+         $contextid=$rows2['contextid'];
+         $component=$rows2['component'];
+         $filearea=$rows2['filearea'];
+         $itemid=$rows1['itemid'];
+         $filename=$rows2['filename'];
+         $url = moodle_url::make_pluginfile_url($contextid,$component,$filearea,$itemid, '/',$filename);
+         echo $url;
+         echo '<a href="'.$url.'">"'.$filename.'"</a>';
+//test
+
+
+
+
+
+
     }
 }
 

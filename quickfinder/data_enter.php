@@ -1,5 +1,6 @@
 <?php
 
+
 function store_assignment_description() {
     global $DB;
     $con = mysql_connect("localhost", "root", "");
@@ -11,13 +12,36 @@ function store_assignment_description() {
     }
     mysql_select_db("Learnorg_moodle", $con);
 
+    $result = mysql_query("select distinct userid from mdl_assign_submission "); //get array of user ids who submit assignments
+    if (!$result) {
+        die('Invalid query: ' . mysql_error());
+    }
 
-    $result = mysql_query("select * from mdl_assign ");
+    $rows = mysql_fetch_array($result);
+     mysql_query("INSERT INTO mdl_block_quickfinder (userid,courseid,assignmentname,assignmenttext)
+//    VALUES ( 1,2,'test','')");
+//    foreach ($rows as $value) {
+//        // get assignment files for each user
+//        $assignmentfiles = mysql_query("select * from mdl_files where userid=$value and component='assignsubmission_file'and filearea='submission_files'and mimetype='application/pdf'");
+//        $assignment = mysql_fetch_array($assignmentfiles);
+//        
+//        foreach ($assignment['itemid'] as $value1 ) {
+//            // get assignment id number relevent to the submission
+//            $assignmentid = mysql_query("select assignment from mdl_assignsubmission_file where submission=$value1");
+//            $assign = mysql_fetch_array($assignmentid);
+//            
+//            // get course id number relevent to the assignment id
+//            $courseid = mysql_query("select course from mdl_course_modules where module=1 and instance=$assign");
+//            $course=mysql_fetch_array($courseid);
+//            
+//            //insert data into plugin table
+//            mysql_query("INSERT INTO mdl_block_quickfinder (userid,courseid,assignmentname,assignmenttext)
+//    VALUES ( $value,$course,'".$assignment['filename']."','')");
+//        }
 //
-//        $record = new stdClass();
-//        $record->name         = 'overview';
-//        $record->displayorder = '10000';
-//        $DB->insert_record('mdl_block_quickfinder', $record, false);
+//        
+//    }
+
 }
 
 function decodeAsciiHex($input) {
