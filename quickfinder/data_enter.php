@@ -12,35 +12,43 @@ function store_assignment_description() {
     }
     mysql_select_db("Learnorg_moodle", $con);
 
-    $result = mysql_query("select distinct userid from mdl_assign_submission "); //get array of user ids who submit assignments
+    $result1 = mysql_query("select DISTINCT userid from mdl_assign_submission "); //get array of user ids who submit assignments
     if (!$result) {
         die('Invalid query: ' . mysql_error());
     }
 
-    $rows = mysql_fetch_array($result);
-     mysql_query("INSERT INTO mdl_block_quickfinder (userid,courseid,assignmentname,assignmenttext)
-//    VALUES ( 1,2,'test','')");
-//    foreach ($rows as $value) {
-//        // get assignment files for each user
-//        $assignmentfiles = mysql_query("select * from mdl_files where userid=$value and component='assignsubmission_file'and filearea='submission_files'and mimetype='application/pdf'");
-//        $assignment = mysql_fetch_array($assignmentfiles);
-//        
-//        foreach ($assignment['itemid'] as $value1 ) {
-//            // get assignment id number relevent to the submission
-//            $assignmentid = mysql_query("select assignment from mdl_assignsubmission_file where submission=$value1");
-//            $assign = mysql_fetch_array($assignmentid);
-//            
-//            // get course id number relevent to the assignment id
-//            $courseid = mysql_query("select course from mdl_course_modules where module=1 and instance=$assign");
-//            $course=mysql_fetch_array($courseid);
-//            
-//            //insert data into plugin table
-//            mysql_query("INSERT INTO mdl_block_quickfinder (userid,courseid,assignmentname,assignmenttext)
-//    VALUES ( $value,$course,'".$assignment['filename']."','')");
-//        }
-//
-//        
-//    }
+     
+    while($rows1 = mysql_fetch_array( $result1 )) {
+        // get assignment files for each user
+       
+        $assignmentfiles = mysql_query("select * from mdl_files where userid=".$rows1['userid']." and component='assignsubmission_file'and filearea='submission_files'and mimetype='application/pdf'");
+        $assignment = mysql_fetch_array($assignmentfiles);
+        
+        //foreach ($assignment['itemid'] as $value1 ) 
+        while( $assignment = mysql_fetch_array($assignmentfiles))
+            {
+            // get assignment id number relevent to the submission
+            $assignmentid = mysql_query("select assignment from mdl_assignsubmission_file where submission=".$assignment['itemid']."");
+            $assign = mysql_fetch_array($assignmentid);
+            
+            // get course id number relevent to the assignment id
+            $courseid = mysql_query("select course from mdl_course_modules where module=1 and instance=".$assign['assignment']."");
+            $course=mysql_fetch_array($courseid);
+            
+            //insert data into plugin table
+              $sub = new stdClass();
+              $sub->itemid = $assignment['itemid'];      
+              $sub->userid= $rows1['userid'];
+              $sub->courseid= $course['course'];
+              $sub->assignmentname= $assignment['filename'];;
+              $sub->assignmenttext= 3;
+              
+              $result = $DB->insert_record('block_quickfinder', $sub);
+            
+        }
+
+        
+    }
 
 }
 

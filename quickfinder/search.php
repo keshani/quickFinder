@@ -52,11 +52,33 @@ function retrive_assignment($keyword, $user, $course) {
 //test
 
 
+$fs = get_file_storage();
+ 
+// Prepare file record object
+$fileinfo = array(
+    'component' => $component,     // usually = table name
+    'filearea' => $filearea,     // usually = table name
+    'itemid' => $itemid,               // usually = ID of row in table
+    'contextid' => $contextid, // ID of context
+    'filepath' => '/',           // any path beginning and ending in /
+    'filename' => $filename); // any filename
+ 
+// Get file
+$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+                      $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+ 
+// Read contents
+if ($file) {
+    $contents = $file->get_content();
+    echo $contents;
+} else {
+    echo 'no file';
+    // file doesn't exist - do something
+}
 
 
 
-
-    }
+   }
 }
 
 ?>
