@@ -64,55 +64,9 @@ class block_quickfinder extends block_base {
     }
 
     public function cron() {
+        
         include 'data_enter.php';
-
-
-   store_assignment_description();
-
-//        global $DB;
-//        $con = mysql_connect("localhost", "root", "");
-//
-//        if (!$con) {
-//            die("no connection");
-//        } else {
-//            echo "you can connect";
-//        }
-//        mysql_select_db("moodle", $con);
-//
-//        $result1= mysql_query("select distinct userid from mdl_assign_submission "); //get array of user ids who submit assignments
-//        if (!$result1) {
-//           die('Invalid query: ' . mysql_error());
-//        }
-//        $sub = new stdClass();
-//
-//     while ($rows1 = mysql_fetch_array($result1)) {
-//           // get assignment files for each user
-//
-//           $assignmentfiles = mysql_query("select * from mdl_files where userid=" . $rows1['userid'] . " and component='assignsubmission_file'and filearea='submission_files'and mimetype='application/pdf'");
-//           // $assignment = mysql_fetch_array($assignmentfiles);
-//
-//           //foreach ($assignment['itemid'] as $value1 ) 
-//           while ($assignment = mysql_fetch_array($assignmentfiles)) {
-//              // get assignment id number relevent to the submission
-//               $assignmentid = mysql_query("select assignment from mdl_assignsubmission_file where submission=" . $assignment['itemid'] . "");
-//               $assign = mysql_fetch_array($assignmentid);
-//
-//               // get course id number relevent to the assignment id
-//               $courseid = mysql_query("select course from mdl_course_modules where module=1 and instance=" . $assign['assignment'] . "");                $course = mysql_fetch_array($courseid);
-//
-//                //insert data into plugin table
-//                
-//
-//                $sub->itemid = $assignment['itemid'];
-//                $sub->userid = $rows1['userid'];
-//                $sub->courseid = $course['course'];
-//                $sub->assignmentname = $assignment['filename'];
-//                $sub->assignmenttext = 'fagasjaal';
-//
-//                $result = $DB->insert_record('block_quickfinder', $sub);
-//           }
-//     }
-
+        store_assignment_description();
 
         return true;
     }
