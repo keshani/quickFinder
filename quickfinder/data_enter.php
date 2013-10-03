@@ -1,7 +1,7 @@
 <?php
 
-
 function store_assignment_description() {
+
     global $DB;
     $con = mysql_connect("localhost", "root", "");
 
@@ -10,46 +10,83 @@ function store_assignment_description() {
     } else {
         echo "you can connect";
     }
-    mysql_select_db("Learnorg_moodle", $con);
+    mysql_select_db("moodle", $con);
 
-    $result1 = mysql_query("select DISTINCT userid from mdl_assign_submission "); //get array of user ids who submit assignments
-    if (!$result) {
+    $result1 = mysql_query("select distinct userid from mdl_assign_submission "); //get array of user ids who submit assignments
+    if (!$result1) {
         die('Invalid query: ' . mysql_error());
     }
+    $sub = new stdClass();
 
-     
-    while($rows1 = mysql_fetch_array( $result1 )) {
+    while ($rows1 = mysql_fetch_array($result1)) {
+        
         // get assignment files for each user
+        $assignmentfiles = mysql_query("select * from mdl_files where userid=" . $rows1['userid'] . " and component='assignsubmission_file'and filearea='submission_files'and mimetype='application/pdf'");
        
-        $assignmentfiles = mysql_query("select * from mdl_files where userid=".$rows1['userid']." and component='assignsubmission_file'and filearea='submission_files'and mimetype='application/pdf'");
-        $assignment = mysql_fetch_array($assignmentfiles);
-        
-        //foreach ($assignment['itemid'] as $value1 ) 
-        while( $assignment = mysql_fetch_array($assignmentfiles))
-            {
+        while ($assignment = mysql_fetch_array($assignmentfiles)) {
+            
             // get assignment id number relevent to the submission
-            $assignmentid = mysql_query("select assignment from mdl_assignsubmission_file where submission=".$assignment['itemid']."");
+            $assignmentid = mysql_query("select assignment from mdl_assignsubmission_file where submission=" . $assignment['itemid'] . "");
             $assign = mysql_fetch_array($assignmentid);
-            
+
             // get course id number relevent to the assignment id
-            $courseid = mysql_query("select course from mdl_course_modules where module=1 and instance=".$assign['assignment']."");
-            $course=mysql_fetch_array($courseid);
-            
+            $courseid = mysql_query("select course from mdl_course_modules where module=1 and instance=" . $assign['assignment'] . "");
+            $course = mysql_fetch_array($courseid);
+
+
+
+            $fs = get_file_storage();
+            $component='assignsubmission_file';
+            $filearea='submission_files';
+            $itemid=$assignment['itemid'];
+            $contextid=$assignment['contextid'];
+            $filename= $assignment['filename'];
+
+            // Prepare file record object
+            $fileinfo = array(
+                'component' => $component,                                      // usually = table name
+                'filearea' => $filearea,                                        // usually = table name
+                'itemid' => $itemid,                                            // usually = ID of row in table
+                'contextid' => $contextid,                                      // ID of context
+                'filepath' => '/',                                              // any path beginning and ending in /
+                'filename' => $filename);                                       // any filename
+// Get file
+            $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'], $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+
+// Read contents
+            if ($file) {
+                $contents = $file->get_content();
+             $result0=pdf2text($contents);   
+            $sub->itemid = $assignment['itemid'];
+            $sub->userid = $rows1['userid'];
+            $sub->courseid = $course['course'];
+            $sub->assignmentname = $assignment['filename'];
+            $sub->assignmenttext = $result0;
+                echo $contents;
+            } else {
+                
+            $sub->itemid = $assignment['itemid'];
+            $sub->userid = $rows1['userid'];
+            $sub->courseid = $course['course'];
+            $sub->assignmentname = $assignment['filename'];
+            $sub->assignmenttext = 'lpppp';
+               // echo 'no file';
+                // file doesn't exist - do something
+            }
+
+
             //insert data into plugin table
-              $sub = new stdClass();
-              $sub->itemid = $assignment['itemid'];      
-              $sub->userid= $rows1['userid'];
-              $sub->courseid= $course['course'];
-              $sub->assignmentname= $assignment['filename'];;
-              $sub->assignmenttext= 3;
-              
-              $result = $DB->insert_record('block_quickfinder', $sub);
-            
+
+
+//            $sub->itemid = $assignment['itemid'];
+//            $sub->userid = $rows1['userid'];
+//            $sub->courseid = $course['course'];
+//            $sub->assignmentname = $assignment['filename'];
+//            $sub->assignmenttext = $contents;
+
+            $result = $DB->insert_record('block_quickfinder', $sub);
         }
-
-        
     }
-
 }
 
 function decodeAsciiHex($input) {
@@ -309,7 +346,7 @@ function getTextUsingTransformations($texts, $transformations) {
 }
 
 function pdf2text($filename) {
-    $infile = @file_get_contents($filename, FILE_BINARY);
+    $infile = $filename;//@file_get_contents($filename, FILE_BINARY);
     if (empty($infile))
         return "";
 
